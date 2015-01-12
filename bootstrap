@@ -1,0 +1,46 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
+API_PATH="/var/www/cartoque-rundeck/"
+
+cd $API_PATH
+
+echo "-----> Install bundler"
+gem install bundler --verbose
+
+echo "-----> Run bundle check to install gems"
+bundle check || bundle --without test --without development
+
+echo "-----> Thin webserver installation"
+/usr/local/bin/thin install	
+insserv -d thin
+
+echo "-----> Create configuration file"
+cat >/etc/thin/cartoque-rundeck.yml <<EOL
+---
+user: www-data
+group: www-data
+timeout: 30
+wait: 30
+pid: tmp/pids/cartoque-rundeck.pid
+log: log/cartoque-rundeck.log
+max_conns: 1024
+require: []
+environment: production
+max_persistent_conns: 512
+servers: 1
+port: 3000
+address: 0.0.0.0
+threaded: true
+no-epoll: true
+daemonize: true
+chdir: $API_PATH
+tag: cartoque-rundeck
+EOL
+
+thin start -C /etc/thin/cartoque-rundeck.yml
+exit 0
