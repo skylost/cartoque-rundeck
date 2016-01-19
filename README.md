@@ -1,4 +1,4 @@
-# cartoque-rundeck
+# cartoque-to-rundeck
 
 Integrates [Cartoque CMDB](https://github/jjbarth/cartoque/) with [Rundeck](http://rundeck.org/).
 
@@ -9,7 +9,7 @@ Integrates [Cartoque CMDB](https://github/jjbarth/cartoque/) with [Rundeck](http
 ## Installation
 
     cd /var/www
-    git clone https://github.com/skylost/cartoque-rundeck.git
+    git clone https://github.com/skylost/cartoque-to-rundeck.git
     cd cartoque-rundeck
     chmod +x bootstrap
     sudo ./bootstrap
